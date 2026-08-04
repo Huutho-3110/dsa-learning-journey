@@ -23,26 +23,26 @@ The absence of earlier lessons serves as a reminder that maintaining a disciplin
 
 ```text
 DSA-Journey/
-│
-├── README.md                  # Project overview
-│
-├── docs/
-│   ├── notes/                 # Theory notes
-│   ├── algorithms/            # Algorithm explanations
-│   └── mistakes/              # Bug logs & postmortems
-│
-├── cpp/
+├── .github/
+│   └── workflows/             # CI/CD Pipeline (Tự động biên dịch mã nguồn C++)
+├── assets/                    # Hình ảnh, sơ đồ minh họa (Ví dụ: Đồ thị, Cây nhị phân)
+├── docs/                      # Meta-data: Quản lý tiến độ và chất lượng
+│   ├── mistakes.md            # Nhật ký bắt Bug (Segmentation Fault, Memory Leak...)
+│   ├── progress.md            # Theo dõi lộ trình hoàn thành các bài học
+│   └── study-log.md           # Nhật ký thời gian code hằng ngày
+├── notes/                     # Knowledge Base: Không gian lý thuyết độc lập
+│   ├── 07-arrays-strings.md   # Ghi chép lý thuyết và phân tích độ phức tạp
+│   └── 08-linked-lists.md
+├── problems/                  # Workspace: Nơi chứa toàn bộ mã nguồn C++
 │   ├── lesson_07/
-│   ├── lesson_08/
-│   ├── lesson_09/
-│   └── ...
-│
-├── templates/                 # Reusable C++ templates
-│
-├── assets/                    # Images used in documentation
-│
-└── .github/
-    └── workflows/             # GitHub Actions (future)
+│   │   └── two_sum.cpp
+│   └── lesson_08/
+├── templates/                 # Boilerplates: Khuôn mẫu chuẩn hóa
+│   ├── cpp-boilerplate.cpp    # Khung code C++ tối ưu I/O, khai báo class chuẩn
+│   ├── problem-template.md    # Khung trình bày bài giải (Intuition, $O(N)$ Complexity)
+│   └── theory-template.md     # Khung ghi chép lý thuyết cấu trúc dữ liệu
+├── .gitignore                 # Cổng an ninh: Chặn tệp tin nhị phân (.exe, .o, build/)
+└── README.md                  # Landing page & Tuyên ngôn minh bạch của kỹ sư
 ```
 
 ---
