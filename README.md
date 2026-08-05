@@ -24,25 +24,25 @@ The absence of earlier lessons serves as a reminder that maintaining a disciplin
 ```text
 DSA-Journey/
 ├── .github/
-│   └── workflows/             # CI/CD Pipeline (Tự động biên dịch mã nguồn C++)
-├── assets/                    # Hình ảnh, sơ đồ minh họa (Ví dụ: Đồ thị, Cây nhị phân)
-├── docs/                      # Meta-data: Quản lý tiến độ và chất lượng
-│   ├── mistakes.md            # Nhật ký bắt Bug (Segmentation Fault, Memory Leak...)
-│   ├── progress.md            # Theo dõi lộ trình hoàn thành các bài học
-│   └── study-log.md           # Nhật ký thời gian code hằng ngày
-├── notes/                     # Knowledge Base: Không gian lý thuyết độc lập
-│   ├── 07-arrays-strings.md   # Ghi chép lý thuyết và phân tích độ phức tạp
+│   └── workflows/             # CI/CD Pipeline (Automated C++ source code compilation)
+├── assets/                    # Images, illustrative diagrams (Example: Graphs, Binary Trees)
+├── docs/                      # Meta-data: Progress and quality management
+│   ├── mistakes.md            # Bug tracking log (Segmentation Fault, Memory Leak...)
+│   ├── progress.md            # Track lesson completion roadmap
+│   └── study-log.md           # Daily coding time log
+├── notes/                     # Knowledge Base: Independent theoretical space
+│   ├── 07-arrays-strings.md   # Theory notes and complexity analysis
 │   └── 08-linked-lists.md
-├── problems/                  # Workspace: Nơi chứa toàn bộ mã nguồn C++
+├── problems/                  # Workspace: Repository for all C++ source code
 │   ├── lesson_07/
 │   │   └── two_sum.cpp
 │   └── lesson_08/
-├── templates/                 # Boilerplates: Khuôn mẫu chuẩn hóa
-│   ├── cpp-boilerplate.cpp    # Khung code C++ tối ưu I/O, khai báo class chuẩn
-│   ├── problem-template.md    # Khung trình bày bài giải (Intuition, $O(N)$ Complexity)
-│   └── theory-template.md     # Khung ghi chép lý thuyết cấu trúc dữ liệu
-├── .gitignore                 # Cổng an ninh: Chặn tệp tin nhị phân (.exe, .o, build/)
-└── README.md                  # Landing page & Tuyên ngôn minh bạch của kỹ sư
+├── templates/                 # Boilerplates: Standardized templates
+│   ├── cpp-boilerplate.cpp    # C++ boilerplate with optimized I/O, standard class declarations
+│   ├── problem-template.md    # Solution presentation template (Intuition, $O(N)$ Complexity)
+│   └── theory-template.md     # Data structure theory notes template
+├── .gitignore                 # Security gate: Ignore binary files (.exe, .o, build/)
+└── README.md                  # Landing page & Engineer's transparency manifesto
 ```
 
 ---
@@ -151,21 +151,21 @@ DSA-Journey/
 │   └── workflows/             # CI/CD Pipeline (Tự động biên dịch mã nguồn C++)
 ├── assets/                    # Hình ảnh, sơ đồ minh họa (Ví dụ: Đồ thị, Cây nhị phân)
 ├── docs/                      # Meta-data: Quản lý tiến độ và chất lượng
-│   ├── mistakes.md            # Nhật ký bắt Bug (Segmentation Fault, Memory Leak...)
+│   ├── mistakes.md            # Nhật ký phát hiện Bug (Segmentation Fault, Memory Leak...)
 │   ├── progress.md            # Theo dõi lộ trình hoàn thành các bài học
 │   └── study-log.md           # Nhật ký thời gian code hằng ngày
-├── notes/                     # Knowledge Base: Không gian lý thuyết độc lập
+├── notes/                     # Knowledge Base (Không gian lý thuyết độc lập)
 │   ├── 07-arrays-strings.md   # Ghi chép lý thuyết và phân tích độ phức tạp
 │   └── 08-linked-lists.md
-├── problems/                  # Workspace: Nơi chứa toàn bộ mã nguồn C++
+├── problems/                  # Workspace (Nơi chứa toàn bộ mã nguồn C++)
 │   ├── lesson_07/
 │   │   └── two_sum.cpp
 │   └── lesson_08/
-├── templates/                 # Boilerplates: Khuôn mẫu chuẩn hóa
+├── templates/                 # Boilerplates (Khuôn mẫu chuẩn hóa)
 │   ├── cpp-boilerplate.cpp    # Khung code C++ tối ưu I/O, khai báo class chuẩn
 │   ├── problem-template.md    # Khung trình bày bài giải (Intuition, $O(N)$ Complexity)
 │   └── theory-template.md     # Khung ghi chép lý thuyết cấu trúc dữ liệu
-├── .gitignore                 # Cổng an ninh: Chặn tệp tin nhị phân (.exe, .o, build/)
+├── .gitignore                 # Cổng an ninh (Chặn tệp tin nhị phân (.exe, .o, build/))
 └── README.md                  # Landing page & Tuyên ngôn minh bạch của kỹ sư
 ```
 
