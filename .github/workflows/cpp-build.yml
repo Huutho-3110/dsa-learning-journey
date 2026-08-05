@@ -1,0 +1,56 @@
+name: C++ CI & Auto-Grader
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up GCC Compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++
+
+      - name: Compile and Run Test Cases
+        run: |
+          echo "Scanning and running test cases in the problems/ directory..."
+
+          # Find all C++ source files
+          find problems/ -type f -name "*.cpp" | while read file; do
+            dir=$(dirname "$file")
+            basename=$(basename "$file" .cpp)
+
+            # Check whether input.txt and expected.txt exist
+            if [ -f "$dir/input.txt" ] && [ -f "$dir/expected.txt" ]; then
+              echo "----------------------------------------"
+              echo "Testing: $file"
+
+              # 1. Compile the C++ source file
+              g++ -std=c++17 "$file" -o "$dir/$basename.out"
+
+              # 2. Execute the program using input.txt and save the result to output.txt
+              "$dir/$basename.out" < "$dir/input.txt" > "$dir/output.txt"
+
+              # 3. Compare output.txt with expected.txt (ignore whitespace differences)
+              if diff -w -q "$dir/output.txt" "$dir/expected.txt"; then
+                echo "✅ Passed!"
+              else
+                echo "❌ Failed!"
+                echo "[Expected Output]:"
+                cat "$dir/expected.txt"
+                echo "[Actual Output]:"
+                cat "$dir/output.txt"
+                exit 1 # Fail the GitHub Actions workflow
+              fi
+            else
+              echo "⚠️ Skipping $file (input.txt or expected.txt not found)"
+            fi
+          done
