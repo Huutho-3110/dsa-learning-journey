@@ -1,265 +1,429 @@
 # Lesson 07: Number Theory & Combinatorics
-## 1. Đồng dư (Modular Arithmetic)
 
-- **Tính chất phép cộng:**
-  $$
-  (a+b)\bmod m=((a\bmod m)+(b\bmod m))\bmod m
-  $$
+# 1. Đồng dư (Modular Arithmetic)
 
-- **Tính chất phép trừ:**
-  $$
-  (a-b)\bmod m=((a\bmod m)-(b\bmod m)+m)\bmod m
-  $$
+Đồng dư cho phép thực hiện các phép toán trên số rất lớn bằng cách chỉ quan tâm đến phần dư khi chia cho `MOD`.
 
-  - _Lưu ý: Trong C++, nên cộng thêm `m` trước khi `% m` để tránh kết quả âm._
+## Các tính chất
 
-- **Tính chất phép nhân:**
-  $$
-  (a\times b)\bmod m=((a\bmod m)\times(b\bmod m))\bmod m
-  $$
+### Phép cộng
 
----
+```text
+(a + b) % MOD = ((a % MOD) + (b % MOD)) % MOD
+```
 
-## 2. Lũy thừa nhị phân (Binary Exponentiation)
+### Phép trừ
 
-- **Mục đích:** Tính
+```text
+(a - b) % MOD = ((a % MOD) - (b % MOD) + MOD) % MOD
+```
 
-  $$
-  A^B \pmod M
-  $$
+> **Lưu ý:** Trong C++, toán tử `%` có thể trả về số âm. Vì vậy nên cộng thêm `MOD` trước khi `% MOD`.
 
-  với độ phức tạp **$O(\log B)$**.
-
-### Tư duy đệ quy (Chia để trị)
-
-- **Trường hợp cơ sở (Base case):**
-  Khi số mũ bằng `0` thì
-
-  $$
-  A^0=1
-  $$
-
-  nên trả về `1`.
-
-- **Nếu số mũ chẵn:**
-
-  Chia bài toán thành
-
-  $$
-  A^B=(A^{B/2})^2
-  $$
-
-  rồi lấy modulo.
-
-- **Nếu số mũ lẻ:**
-
-  Tách ra
-
-  $$
-  A^B=A\times A^{B-1}
-  $$
-
-  hoặc
-
-  $$
-  A^B=A\times(A^{B/2})^2
-  $$
-
-  rồi lấy modulo.
-
-### Code Implementation
+Ví dụ
 
 ```cpp
-// Tự gõ lại hàm:
-//
-// long long binpow(long long a, long long b, long long m)
-//
-// Lưu ý:
-// - Sử dụng kiểu long long.
-// - Không nhìn lời giải.
-// - Sau khi hoàn thành hãy tự phân tích độ phức tạp.
+int x = (a - b + MOD) % MOD;
+```
+
+### Phép nhân
+
+```text
+(a * b) % MOD = ((a % MOD) * (b % MOD)) % MOD
 ```
 
 ---
 
-## 3. Phân tích thừa số nguyên tố & Số lượng ước
+# 2. Binary Exponentiation
 
-- **Định lý cơ bản:** Một số nguyên dương $N$ luôn phân tích được thành
+## Mục đích
 
-$$
-N=p_1^{x_1}\cdot p_2^{x_2}\cdots p_k^{x_k}
-$$
+Tính
 
-- **Công thức đếm tổng số ước:**
+```text
+A^B mod M
+```
 
-$$
-(x_1+1)(x_2+1)\cdots(x_k+1)
-$$
+với độ phức tạp
 
-Trong đó $x_i$ là số mũ của từng thừa số nguyên tố.
+```text
+O(log B)
+```
 
-### Code Implementation
+thay vì
 
-```cpp
-// Tự gõ lại hàm:
-//
-// int countDivisors(long long n)
-//
-// Gợi nhớ:
-// - Điều kiện dừng tối ưu của vòng for là i * i <= n.
-// - Vì sao chỉ cần duyệt đến sqrt(n)?
-// - Đừng quên xử lý trường hợp còn lại khi n > 1.
+```text
+O(B)
+```
+
+## Ý tưởng
+
+### Base Case
+
+```text
+A^0 = 1
+```
+
+### Nếu số mũ chẵn
+
+```text
+A^B = (A^(B/2))²
+```
+
+### Nếu số mũ lẻ
+
+```text
+A^B = A × A^(B-1)
 ```
 
 ---
 
-## 4. Công thức Legendre (Bậc của thừa số nguyên tố)
+## Recursive Implementation
 
-- **Mục đích:** Tìm số mũ lớn nhất $X$ sao cho
+```cpp
+long long binpow(long long a, long long b, long long mod) {
+    if (b == 0) return 1;
 
-$$
-P^X\mid N!
-$$
+    long long half = binpow(a, b / 2, mod);
+    long long result = (half * half) % mod;
 
-- **Công thức Toán học:**
+    if (b % 2)
+        result = (result * a) % mod;
 
-$$
-X=\left\lfloor\frac{N}{P}\right\rfloor+
-\left\lfloor\frac{N}{P^2}\right\rfloor+
-\left\lfloor\frac{N}{P^3}\right\rfloor+\cdots
-$$
+    return result;
+}
+```
 
-### Tương quan với C++
+---
 
-**Câu hỏi**
+## Iterative Implementation (Khuyên dùng)
 
-Tại sao phép chia số nguyên (`/`) trong C++ lại phản ánh chính xác công thức trên mà không cần dùng `floor()`?
+```cpp
+long long binpow(long long a, long long b, long long mod) {
+    a %= mod;
+    long long res = 1;
 
-**Trả lời**
+    while (b > 0) {
+        if (b & 1)
+            res = (res * a) % mod;
 
-Trong C++, khi chia hai số nguyên, kết quả tự động lấy phần nguyên (integer division), tức là:
+        a = (a * a) % mod;
+        b >>= 1;
+    }
+
+    return res;
+}
+```
+
+**Complexity**
+
+- Time: `O(log B)`
+- Memory: `O(1)` (iterative)
+
+---
+
+# 3. Prime Factorization & Number of Divisors
+
+## Định lý
+
+Mọi số nguyên dương đều có thể phân tích duy nhất thành tích các lũy thừa của số nguyên tố.
+
+```text
+N = p1^x1 × p2^x2 × ... × pk^xk
+```
+
+## Công thức số lượng ước
+
+```text
+(x1 + 1)(x2 + 1)...(xk + 1)
+```
+
+Trong đó `xi` là số mũ của từng thừa số nguyên tố.
+
+---
+
+## Implementation
+
+```cpp
+int countDivisors(long long n) {
+    int ans = 1;
+
+    for (long long i = 2; i * i <= n; i++) {
+        if (n % i == 0) {
+            int exponent = 0;
+
+            while (n % i == 0) {
+                exponent++;
+                n /= i;
+            }
+
+            ans *= (exponent + 1);
+        }
+    }
+
+    if (n > 1)
+        ans *= 2;
+
+    return ans;
+}
+```
+
+**Complexity**
+
+```text
+O(√N)
+```
+
+---
+
+# 4. Legendre Formula
+
+## Mục đích
+
+Tìm số mũ lớn nhất của số nguyên tố `p` trong `N!`.
+
+Ví dụ
+
+```text
+10! chia hết cho 2^8
+```
+
+thì đáp án là
+
+```text
+8
+```
+
+## Công thức
+
+```text
+floor(N / P)
++ floor(N / P²)
++ floor(N / P³)
++ ...
+```
+
+---
+
+## Vì sao C++ không cần floor()?
+
+Trong C++, phép chia số nguyên luôn lấy phần nguyên.
+
+Ví dụ
 
 ```cpp
 7 / 2 = 3
-9 / 4 = 2
+15 / 4 = 3
+20 / 6 = 3
 ```
 
-Điều này đúng với toán tử
-
-$$
-\left\lfloor\frac{a}{b}\right\rfloor
-$$
-
-nên không cần gọi `floor()`.
-
-### Code Implementation
+Do đó
 
 ```cpp
-// Tự gõ lại:
-//
-// long long legendre(long long n, long long p)
-//
-// Sau khi viết xong hãy tự giải thích:
-// - Vì sao n /= p sau mỗi vòng lặp?
-// - Vì sao thuật toán chạy rất nhanh?
+n / p
+```
+
+đã chính là
+
+```text
+floor(n / p)
 ```
 
 ---
 
-## 5. Sàng số nguyên tố (Sieve of Eratosthenes)
-
-- **Độ phức tạp thuật toán:**
-
-$$
-O(N\log\log N)
-$$
-
-### Base Cases
-
-- Số **0** không phải số nguyên tố.
-- Số **1** không phải số nguyên tố.
-
-### Sàng phân đoạn (Segmented Sieve)
-
-**Khi nào sử dụng?**
-
-Khi:
-
-- $N$ rất lớn.
-- Nhưng độ dài đoạn
-
-$$
-|A-B|
-$$
-
-nhỏ (ví dụ $\le10^7$).
-
-**Công thức tìm bội đầu tiên của $i$ không nhỏ hơn $A$:**
-
-$$
-\max(i^2,\left\lceil\frac{A}{i}\right\rceil\times i)
-$$
-
-Trong C++ thường viết:
+## Implementation
 
 ```cpp
-max(i * i, ((A + i - 1) / i) * i)
+long long legendre(long long n, long long p) {
+    long long ans = 0;
+
+    while (n) {
+        n /= p;
+        ans += n;
+    }
+
+    return ans;
+}
 ```
 
-### Code Implementation
+**Complexity**
 
-```cpp
-// Tự gõ lại:
-//
-// void segmentedSieve(long long A, long long B)
-//
-// Gợi nhớ:
-//
-// - Tạo 2 vector<bool>
-// - Một vector cho prime.
-// - Một vector cho đoạn [A, B].
-// - Tự nhớ cách đánh dấu các bội.
+```text
+O(logₚ N)
 ```
 
 ---
 
-## 6. Bài toán chia kẹo Euler (Stars and Bars)
+# 5. Sieve of Eratosthenes
 
-### Trường hợp 1
+## Complexity
 
-Có:
+```text
+O(N log log N)
+```
 
-- $N$ viên kẹo
-- $K$ đứa trẻ
-- Mỗi đứa nhận **ít nhất 1 viên**
+## Base Cases
 
-**Công thức tổ hợp**
+```text
+0 không phải số nguyên tố.
 
-$$
-\boxed{\binom{N-1}{K-1}}
-$$
+1 không phải số nguyên tố.
+```
 
 ---
 
-### Trường hợp 2
+## Sieve Implementation
 
-Có:
+```cpp
+vector<bool> sieve(int n) {
+    vector<bool> prime(n + 1, true);
 
-- $N$ viên kẹo
-- $K$ đứa trẻ
-- Có thể có đứa **không nhận viên nào**
+    prime[0] = prime[1] = false;
 
-**Kỹ thuật quy đổi**
+    for (int i = 2; i * i <= n; i++) {
+        if (!prime[i]) continue;
 
-Thêm **$K-1$ thanh ngăn (bars)** vào giữa các viên kẹo hoặc quy đổi bằng cách thêm **$K$ viên kẹo giả** để biến bài toán thành trường hợp mỗi nhóm có ít nhất một phần tử.
+        for (int j = i * i; j <= n; j += i)
+            prime[j] = false;
+    }
 
-> Gợi nhớ: Sau phép quy đổi, bài toán trở thành chia **$N+K$** đối tượng với điều kiện mỗi nhóm đều có ít nhất một phần tử.
+    return prime;
+}
+```
 
-**Công thức tổ hợp**
+---
 
-$$
-\boxed{\binom{N+K-1}{K-1}}
-$$đ
+# Segmented Sieve
+
+## Khi nào dùng?
+
+Khi
+
+- N rất lớn (10¹², 10¹⁸...)
+- nhưng chỉ cần prime trong đoạn `[L, R]`
+- với `R - L ≤ 10⁷`
+
+---
+
+## Tìm bội đầu tiên
+
+```cpp
+long long start = max(i * i, ((L + i - 1) / i) * i);
+```
+
+---
+
+## Implementation
+
+```cpp
+vector<long long> segmentedSieve(long long L, long long R) {
+
+    long long limit = sqrt(R);
+
+    vector<bool> prime(limit + 1, true);
+
+    vector<bool> isPrime(R - L + 1, true);
+
+    for (long long i = 2; i * i <= limit; i++) {
+        if (!prime[i]) continue;
+
+        for (long long j = i * i; j <= limit; j += i)
+            prime[j] = false;
+    }
+
+    for (long long i = 2; i <= limit; i++) {
+
+        if (!prime[i]) continue;
+
+        long long start = max(i * i, ((L + i - 1) / i) * i);
+
+        for (long long j = start; j <= R; j += i)
+            isPrime[j - L] = false;
+    }
+
+    if (L == 1)
+        isPrime[0] = false;
+
+    vector<long long> ans;
+
+    for (long long i = L; i <= R; i++)
+        if (isPrime[i - L])
+            ans.push_back(i);
+
+    return ans;
+}
+```
+
+---
+
+# 6. Stars and Bars
+
+Cho `N` vật giống nhau chia cho `K` nhóm.
+
+---
+
+## Trường hợp 1
+
+Mỗi nhóm có **ít nhất 1 phần tử**
+
+```text
+C(N - 1, K - 1)
+```
+
+Ví dụ
+
+```text
+7 viên kẹo
+
+3 đứa trẻ
+
+=> C(6,2)
+```
+
+---
+
+## Trường hợp 2
+
+Có thể có nhóm rỗng
+
+Quy đổi:
+
+Thêm `K` viên kẹo giả (hoặc tương đương chuyển điều kiện về mỗi nhóm có ít nhất một phần tử).
+
+Công thức
+
+```text
+C(N + K - 1, K - 1)
+```
+
+Ví dụ
+
+```text
+7 viên kẹo
+
+3 đứa trẻ
+
+=> C(9,2)
+```
+
+---
+
+## Khi nào sử dụng?
+
+- Chia kẹo
+- Chia bi
+- Phân phối tài nguyên
+- Chọn nghiệm nguyên không âm
+- Tổ hợp có lặp
+
+**Complexity**
+
+```text
+O(1)
+```
+
+(khi đã tiền xử lý giai thừa và nghịch đảo modulo)
+
 # ✅ Self-Check
 
 - [ ] Vì sao Binary Exponentiation có độ phức tạp $O(\log n)$?
