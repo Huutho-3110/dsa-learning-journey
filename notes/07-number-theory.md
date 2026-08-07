@@ -435,19 +435,18 @@ O(1)
 
 ---
 
-# 📝 Reflection
+# 📝 Answers
 
-- Phần khó nhớ nhất:
-  - `[...]`
+1. Về cơ bản, thuật toán Binary Exponentiation (lũy thừa nhị phân) sẽ chia đôi liên tục số mũ. Với mỗi lần chia cho $2$, số bước thực hiện tương đương với cơ số $2$ của số mũ, dẫn đến độ phức tạp thời gian (Time Complexity) là $\mathcal{O}(\log N)$.
+2. Khi phân tích thừa số nguyên tố, ta chỉ cần duyệt đến $N$ vì không có số nguyên $N$ nào có thể chứa một thừa số nguyên tố lớn hơn chính nó.
+3. Công thức Legendre được sử dụng để tính số mũ cao nhất $x$ của một số nguyên tố $p$ sao cho $N!$ chia hết cho $p^x$. Với mỗi lần chia cho $p$, ta tính được số lượng các số chia hết cho $p$ trong khoảng từ $1$ đến $N$. Mỗi số như vậy được coi là $p$ đóng góp $1$ lần. Do đó, ta cộng các giá trị $\lfloor \frac{N}{p} \rfloor$ (và các bậc cao hơn) để tính tổng số lần $p$ đóng góp, từ đó xác định được số mũ $x$.
+4. Sự khác biệt giữa Sieve và Segmented Sieve:
 
-- Thuật toán cần luyện lại:
-  - `[...]`
+- **Sieve of Eratosthenes** được dùng để tìm tất cả các số nguyên tố nằm trong đoạn từ $1$ đến $N$ với $N$ có giới hạn vừa đủ.
+- **Segmented Sieve** được dùng để tìm tất cả các số nguyên tố trong một khoảng $[L, R]$ với giới hạn rất lớn.
 
-- Sai lầm mình từng mắc:
-  - `[...]`
+5. Phương pháp Stars and Bars (bài toán chia kẹo) được áp dụng khi cần phân chia một số lượng $P$ cho $N$ đối tượng sao cho mỗi đối tượng nhận được ít nhất $1$ phần tử.
+6. Sự khác biệt trong các điều kiện của bài toán chia kẹo:
 
-- Mức độ nhớ bài (0–10):
-  - `[...]`
-
-- Ngày ôn lại tiếp theo:
-  - `[...]`
+- **Điều kiện "ít nhất một viên":** Ta chỉ cần đặt các vách ngăn nằm ở các khoảng trống ở giữa $2$ viên kẹo.
+- **Điều kiện "có thể không nhận viên nào":** Ta có thể đặt các vách ngăn ở những vị trí ngoài rìa (tức là có thể đặt liền kề với một viên kẹo hoặc sát mép ngoài).
