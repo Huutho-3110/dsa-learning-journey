@@ -37,68 +37,22 @@ Print the number of distinct strings that can be formed by rearranging the chara
 #include <vector>
 #include <string>
 #include <algorithm>
-#include <map>
 
 using namespace std;
-
+const long long MOD = 1e9 + 7;
 long long binpow(long long a, long long b, long long mod)
 {
+    long long res = 1;
     if (b == 0)
         return 1;
-
     long long half = binpow(a, b / 2, mod);
-    long long result = (half * half) % mod;
-
+    res = (half * half) % mod;
     if (b % 2)
-        result = (result * a) % mod;
-
-    return result;
-}
-vector<int> fre(string s)
-{
-    int n = s.size();
-    map<char, int> mp;
-    for (int i = 0; i < n; i++)
     {
-        mp[s[i]]++;
+        res = (res * a) % mod;
     }
-    vector<int> k;
-    for (auto x : mp)
-    {
-        k.push_back(x.second);
-    }
-    return k;
+    return res;
 }
-long long legendre(long long n, long long p)
-{
-    long long ans = 0;
-
-    while (n)
-    {
-        n /= p;
-        ans += n;
-    }
-
-    return ans;
-}
-vector<bool> sieve(int n)
-{
-    vector<bool> prime(n + 1, true);
-
-    prime[0] = prime[1] = false;
-
-    for (int i = 2; i * i <= n; i++)
-    {
-        if (!prime[i])
-            continue;
-
-        for (int j = i * i; j <= n; j += i)
-            prime[j] = false;
-    }
-
-    return prime;
-}
-
 class Solution
 {
 public:
@@ -107,38 +61,33 @@ public:
         // Implement logic here
         string s;
         cin >> s;
-        const int n = s.size();
-        vector<bool> sieveN = sieve(n);
-        map<int, int> legN;
-        for (int i = 0; i <= (int)sieveN.size(); i++)
+        int n = s.size();
+        vector<long long> frac(n + 1, 1);
+        frac[0] = 1;
+        for (int i = 1; i <= n; i++)
         {
-            if (!sieveN[i])
+            frac[i] = frac[i - 1] * i % MOD;
+        }
+        long long ans = frac[n];
+        vector<int> fre(256, 0);
+        for (char x : s)
+        {
+            fre[(unsigned char)x]++;
+        }
+        for (int i = 0; i < 256; i++)
+        {
+            if (fre[i] == 0)
                 continue;
-            legN[i] = legendre(n, i);
+            long long temp = binpow(frac[fre[i]], MOD - 2, MOD);
+            ans = ans * temp % MOD;
         }
-        vector<int> k = fre(s);
-        for (int i = 0; i < (int)k.size(); i++)
-        {
-            vector<bool> tempSieve = sieve(k[i]);
-            for (int j = 0; j < (int)tempSieve.size(); j++)
-            {
-                if (!tempSieve[j])
-                    continue;
-                legN[j] -= legendre(k[i], j);
-            }
-        }
-        int res = 0;
-        const int MOD = 1e9 + 7;
-        for (auto x : legN)
-        {
-            res += binpow(x.first, x.second, MOD);
-        }
+        cout << ans << endl;
     }
 };
 
 int main()
 {
-
+    // Optimize standard I/O operations for performance
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
