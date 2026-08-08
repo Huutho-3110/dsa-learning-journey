@@ -90,3 +90,37 @@ Thay vì xử lý và phân tích từng giai thừa một cách thủ công, c�
 - Khi tính toán, chỉ cần lấy các giá trị từ `vector` này kết hợp với thuật toán Nghịch đảo Modulo. Chi tiết triển khai cấu trúc này có thể tham khảo trong mã nguồn của Bài 7 - Ex 2.
 
 Việc sửa đổi và tự mày mò lại thuật toán không chỉ giúp tối ưu hóa mã nguồn mà còn giúp mình củng cố và hiểu sâu sắc hơn về bản chất của tổ hợp toán học và xử lý modulo.
+
+## 3. Nguyên lý bù trừ (Inclusion-Exclusion Principle)
+
+- **Mục đích:** Được sử dụng trong toán học tổ hợp để đếm chính xác số lượng phần tử của hợp nhiều tập hợp. Nguyên lý này hoạt động bằng cách cộng tổng số phần tử của các tập hợp đơn lẻ, sau đó "trừ đi" các phần giao nhau (để loại bỏ việc đếm trùng), và tiếp tục "bù lại" phần giao của nhiều tập hợp hơn.
+- **Công thức với 2 tập hợp ($A$ và $B$):**
+
+$$\vert{}A \cup B\vert{} = \vert{}A\vert{} + \vert{}B\vert{} - \vert{}A \cap B\vert{}$$
+
+- **Công thức với 3 tập hợp ($A$, $B$ và $C$):**
+
+$$\vert{}A \cup B \cup C\vert{} = \vert{}A\vert{} + \vert{}B\vert{} + \vert{}C\vert{} - \vert{}A \cap B\vert{} - \vert{}A \cap C\vert{} - \vert{}B \cap C\vert{} + \vert{}A \cap B \cap C\vert{}$$
+
+## 4. Thuật toán sinh (Generation Algorithm)
+
+- **Mục đích:** Xử lý các bài toán yêu cầu duyệt qua toàn bộ các trường hợp có thể xảy ra (Kỹ thuật vét cạn - Brute-force).
+- **Điều kiện bắt buộc để áp dụng:**
+
+1. Xác định được rõ ràng cấu hình đầu tiên của bài toán.
+2. Xác định được dấu hiệu nhận biết cấu hình cuối cùng.
+3. Thiết lập được quy tắc/thuật toán để từ một cấu hình hiện tại, ta có thể sinh ra được cấu hình kế tiếp theo một thứ tự từ điển hoặc quy luật nhất định.
+
+- **Mã giả (Pseudocode):**
+
+```plaintext
+Bước 1: Khởi tạo <Cấu hình đầu tiên>
+Bước 2: While (Chưa gặp <Cấu hình cuối cùng>) {
+            In ra / Xử lý <Cấu hình hiện tại>
+            Sinh ra <Cấu hình kế tiếp>
+        }
+Bước 3: In ra / Xử lý <Cấu hình cuối cùng>
+
+```
+
+> **Lưu ý tối ưu code:** Trong thực tế khi lập trình C/C++, người ta thường dùng một vòng lặp `while(true)` hoặc `do...while` kết hợp với một cờ (flag) đánh dấu `is_final` để gộp Bước 3 vào bên trong vòng lặp, giúp code gọn gàng hơn và tránh bị lặp lại thao tác xử lý cấu hình cuối.
