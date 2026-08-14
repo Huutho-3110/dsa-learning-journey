@@ -15,7 +15,7 @@ public:
     {
         int n, k;
         cin >> n >> k;
-        int maxBase = n;    
+        int maxBase = n;
         vector<int> input(k);
 
         for (int i = 0; i < k; i++)
