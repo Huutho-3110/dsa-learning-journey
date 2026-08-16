@@ -16,19 +16,18 @@ public:
     void solve()
     {
         int T;
-        if (!(cin >> T))
-            return;
+        cin >> T;
 
-        long long total_divisors = 1;
+        long long uoc = 1;
 
         for (int i = 0; i < T; i++)
         {
             long long p, e;
             cin >> p >> e;
-            total_divisors = (total_divisors * (e + 1)) % MOD;
+            uoc = (uoc * (e + 1)) % MOD;
         }
 
-        cout << total_divisors << "\n";
+        cout << uoc << "\n";
     }
 };
 
