@@ -7,34 +7,24 @@
 #include <bits/stdc++.h>
 
 using namespace std;
-int n;
-vector<int> input;
-
-vector<int> kq;
 vector<vector<int>> ans;
-void nhap()
-{
-    cin >> n;
-    for (int i = 0; i < n; i++)
-    {
-        int in;
-        cin >> in;
-        input.push_back(in);
-    }
-}
+vector<int> kq;
 
-void Try(int start)
+void Try(int start, int curSum, int &k, int &n, int a[])
 {
-    if (kq.size() >= 2)
+    if (curSum > k)
+        return;
+    if (curSum == k)
+    {
         ans.push_back(kq);
+    }
     for (int j = start; j < n; j++)
     {
-        if (kq.size() == 0 || kq[(int)kq.size() - 1] < input[j])
-        {
-            kq.push_back(input[j]);
-            Try(j + 1);
-            kq.pop_back();
-        }
+        if (curSum + a[j] > k)
+            break;
+        kq.push_back(a[j]);
+        Try(j + 1, curSum + a[j], k, n, a);
+        kq.pop_back();
     }
 }
 class Solution
@@ -42,32 +32,30 @@ class Solution
 public:
     void solve()
     {
-        nhap();
-        Try(0);
-        sort(ans.begin(), ans.end(), [](const vector<int> &a, const vector<int> &b)
-             {
-            string strA = "";
-            for (int i = 0; i < (int)a.size(); ++i) {
-                strA += to_string(a[i]);
-                if (i + 1 < (int)a.size()) strA += " ";
-            }
-            
-            string strB = "";
-            for (int i = 0; i < (int)b.size(); ++i) {
-                strB += to_string(b[i]);
-                if (i + 1 < (int)b.size()) strB += " ";
-            }
-            
-            return strA < strB; });
+        int n, k;
+        int a[10000];
+        cin >> n >> k;
+        for (int i = 0; i < n; i++)
+        {
+            cin >> a[i];
+        }
+        sort(a, a + n);
+        Try(0, 0, k, n, a);
+        if (ans.size() == 0)
+        {
+            cout << -1;
+            return;
+        }
         for (auto x : ans)
         {
+            cout << "[";
             for (int i = 0; i < (int)x.size(); ++i)
             {
                 cout << x[i];
                 if (i + 1 < (int)x.size())
                     cout << " ";
             }
-            cout << '\n';
+            cout << "]" << '\n';
         }
     }
 };
