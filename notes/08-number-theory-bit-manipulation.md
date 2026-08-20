@@ -1,126 +1,272 @@
-# Lesson 8 - Number Theory & Bit Manipulation
+---
 
-## 1. Định lý Euclid mở rộng (Extended Euclidean Algorithm)
+# Các Thuật Toán Sinh (Generation Algorithms)
 
-- **Mục đích:** Tìm Ước chung lớn nhất $\gcd(a,b)$ và hai hệ số nguyên $x, y$ (hệ số Bézout) thỏa mãn phương trình Diophantine tuyến tính:
+## Tổng quan (Overview)
 
-$$a \cdot x + b \cdot y = \gcd(a,b)$$
+Thuật toán sinh là phương pháp dùng để liệt kê tất cả các cấu hình có thể có của một bài toán tổ hợp.
+Thay vì dùng đệ quy, thuật toán sinh hoạt động dựa trên một vòng lặp với logic cốt lõi:
 
-- **Công thức quy nạp:** Dựa vào $\gcd(a, b) = \gcd(b, a \pmod b)$, giả sử lớp đệ quy dưới giải xong và trả về $x_1, y_1$ sao cho:
+1. Bắt đầu từ **cấu hình đầu tiên**.
+2. Kiểm tra xem đã tới **cấu hình cuối cùng** chưa.
+3. Nếu chưa, in ra cấu hình hiện tại và dùng thuật toán để **sinh ra cấu hình kế tiếp**.
 
-$$b \cdot x_1 + (a \pmod b) \cdot y_1 = \gcd(a, b)$$
+**Khuôn mẫu chung (Mã giả tổng quát):**
 
-Bằng cách thay $a \pmod b = a - \lfloor \frac{a}{b} \rfloor \cdot b$, ta rút gọn được công thức cập nhật ngược lên cho lớp hiện tại:
-
-- $x = y_1$
-- $y = x_1 - \lfloor \frac{a}{b} \rfloor \cdot y_1$
-
-- **Độ phức tạp thời gian (Time Complexity):** $\mathcal{O}(\log(\min(a,b)))$
-
-**Pseudocode:**
-
-```plaintext
-Function Extended_GCD(a, b):
-    // Trường hợp cơ sở
-    If b == 0:
-        Return (a, 1, 0)  // Trả về (gcd, x, y)
-
-    // Đệ quy đi xuống
-    (g, x1, y1) = Extended_GCD(b, a % b)
-
-    // Tính toán hệ số x, y khi đi lên
-    x = y1
-    y = x1 - floor(a / b) * y1
-
-    Return (g, x, y)
+```text
+Khởi tạo cấu hình đầu tiên;
+while (Chưa đạt cấu hình cuối cùng) {
+    Xử lý/In cấu hình hiện tại;
+    Sinh ra cấu hình kế tiếp;
+}
 
 ```
 
-## 2. Nghịch đảo Modulo & Định lý Fermat nhỏ
+Dưới đây là chi tiết 4 thuật toán sinh cơ bản nhất trong Khoa học Máy tính.
 
-- **Nghịch đảo Modulo:** Tìm số $x$ sao cho $a \cdot x \equiv 1 \pmod m$. Điều kiện bắt buộc để $x$ tồn tại là $\gcd(a, m) = 1$ (hai số phải nguyên tố cùng nhau).
+---
 
-### Cách 1: Dùng Euclid mở rộng
+## 1. Thuật toán sinh xâu nhị phân (Binary String Generation)
 
-Biến đổi quan hệ đồng dư thành phương trình:
+### Ý nghĩa & Mục đích (Theory)
 
-$$a \cdot x + m \cdot y = 1$$
+- **Dùng để làm gì:** Liệt kê tất cả các xâu (mảng) có độ dài $N$ chỉ gồm 2 ký tự `0` và `1`.
+- **Dùng khi nào:** Khi bài toán yêu cầu xét tất cả các trạng thái Đúng/Sai, Có/Không. Ví dụ: Bài toán cái túi (chọn hoặc không chọn đồ vật), bài toán liệt kê tất cả tập con của một tập hợp.
+- **Ý nghĩa:** Tương đương với việc đếm các số trong hệ nhị phân từ $0$ đến $2^N - 1$.
 
-Áp dụng thuật toán ở mục 1 để tìm $x$.
+### Trạng thái điều kiện
 
-### Cách 2: Dùng Định lý Fermat nhỏ
+- **Cấu hình đầu tiên:** Xâu toàn bit `0` (VD: `0000`).
+- **Khi nào tiếp tục:** Khi xâu chưa phải là toàn bit `1`.
+- **Khi nào dừng (Cấu hình cuối):** Xâu toàn bit `1` (VD: `1111`).
 
-_(Chỉ áp dụng khi $m$ là số nguyên tố)_
+### Thuật toán cài đặt (Logic)
 
-Nếu $m$ là số nguyên tố và $a$ không chia hết cho $m$, định lý phát biểu:
+_Thuật toán sinh bằng mảng:_ Quét từ cuối mảng (bên phải) lên đầu. Tìm bit `0` đầu tiên gặp được.
 
-$$a^{m-1} \equiv 1 \pmod m$$
+1. Đổi bit `0` đó thành `1`.
+2. Đổi toàn bộ các bit phía sau (bên phải) nó thành `0`.
 
-Tách số mũ ra, ta được $a \cdot a^{m-2} \equiv 1 \pmod m$. Vậy nghịch đảo modulo của $a$ chính là $a^{m-2} \pmod m$.
+_Mở rộng: Sinh bằng toán tử bit (Bitwise)_
+Chỉ cần chạy một vòng lặp $i$ từ $0$ đến $2^N - 1$. Biểu diễn nhị phân của số $i$ chính là một cấu hình.
 
-> **Nhận xét:** Cách này cài đặt rất đơn giản, chỉ cần dùng thuật toán Lũy thừa nhị phân (Binary Exponentiation) để tính $a^{m-2} \pmod m$ trong thời gian $\mathcal{O}(\log m)$.
+### Mã giả & C++ Code (Cách dùng mảng)
 
-## Ghi chú: Cách tiếp cận Bài 7 - Ex 2
+```cpp
+// Độ phức tạp thời gian: O(2^N)
+// Độ phức tạp không gian: O(N)
+#include <iostream>
+using namespace std;
 
-Ban đầu, khi phân tích đề bài, mình xác định được công thức tổng quát để giải quyết bài toán là:
+int a[100], n;
+bool isFinal = false; // Cờ đánh dấu cấu hình cuối
 
-$$\frac{n!}{k_1! \cdot k_2! \cdot k_3! \dots} \pmod{\text{MOD}}$$
+void sinh() {
+    int i = n;
+    // Tìm bit 0 đầu tiên từ phải sang trái
+    while (i >= 1 && a[i] == 1) {
+        a[i] = 0; // Đổi các bit 1 ở cuối thành 0
+        i--;
+    }
+    if (i == 0) {
+        isFinal = true; // Đã đến cấu hình 11...1
+    } else {
+        a[i] = 1; // Đổi bit 0 tìm được thành 1
+    }
+}
 
-Với $\text{MOD} = 10^9 + 7$. Tuy nhiên, cách triển khai thuật toán ban đầu của mình lại khá dài dòng và phức tạp.
+int main() {
+    n = 4; // Ví dụ n = 4
+    for(int i = 1; i <= n; i++) a[i] = 0; // Khởi tạo cấu hình đầu
 
-### 1. Hướng tiếp cận ban đầu (Chưa tối ưu)
+    while (!isFinal) {
+        for(int i = 1; i <= n; i++) cout << a[i]; // In cấu hình
+        cout << endl;
+        sinh(); // Sinh cấu hình tiếp theo
+    }
+    return 0;
+}
 
-- Trước tiên, mình đếm tần số xuất hiện của các ký tự trong chuỗi $s$ có độ dài $n$ để xác định các giá trị $k$.
-- Sử dụng thuật toán Sàng nguyên tố (Sieve) để tìm các số nguyên tố nhỏ hơn hoặc bằng $n$.
-- Sử dụng Lũy thừa nhị phân (Binary Exponentiation) để xác định số mũ lớn nhất của từng số nguyên tố trong $n!$. Nói cách khác, mình phân tích $n!$ thành tích các thừa số nguyên tố kèm theo số mũ tương ứng.
-- Áp dụng quy trình tương tự cho các dãy $k$. Việc phải duyệt qua từng $k_i$ và lặp lại thao tác phân tích như với $n$ khiến toàn bộ quá trình trở nên cực kỳ dài dòng, chưa tính đến độ phức tạp của việc tính kết quả modulo cuối cùng.
+```
 
-### 2. Vấn đề của phương pháp cũ
+---
 
-Sau khi nghiên cứu kỹ hơn, mình nhận ra hướng đi trước đó mắc phải hai nhược điểm lớn:
+## 2. Thuật toán sinh tập con (Subset / Combination Generation)
 
-- **Sai lầm về toán học trong xử lý modulo:** Trong số học modulo, ta không thể thực hiện phép chia trực tiếp. Để chia dư, bắt buộc phải tìm **Nghịch đảo Modulo (Modular Multiplicative Inverse)** của mẫu số trước khi thực hiện phép nhân.
-- **Dư thừa vòng lặp và tốn kém thời gian:** Việc phân tích từng giai thừa ra thừa số nguyên tố là không cần thiết.
+### Ý nghĩa & Mục đích (Theory)
 
-### 3. Giải pháp tối ưu hóa
+- **Dùng để làm gì:** Liệt kê tất cả các tổ hợp chập $K$ của $N$ phần tử.
+- **Dùng khi nào:** Cần chọn ra một nhóm $K$ phần tử từ $N$ phần tử mà **không quan tâm đến thứ tự**. Ví dụ: Chọn 3 học sinh từ 10 học sinh đi thi.
 
-Thay vì xử lý và phân tích từng giai thừa một cách thủ công, cách tiếp cận chuẩn xác và ngắn gọn hơn là:
+### Trạng thái điều kiện
 
-- Tiền tính (precompute) mảng giai thừa bằng cách tạo một `vector` (ví dụ: `frac`) để lưu trữ giá trị của từng giai thừa sau khi đã chia dư cho $\text{MOD}$.
-- Khi tính toán, chỉ cần lấy các giá trị từ `vector` này kết hợp với thuật toán Nghịch đảo Modulo. Chi tiết triển khai cấu trúc này có thể tham khảo trong mã nguồn của Bài 7 - Ex 2.
+- **Giới hạn giá trị:** Tại vị trí thứ $i$, giá trị lớn nhất có thể đạt được là $N - K + i$.
+- **Cấu hình đầu tiên:** `1, 2, ..., K` (Các phần tử nhỏ nhất).
+- **Khi nào tiếp tục:** Khi vẫn còn ít nhất một phần tử chưa đạt giá trị lớn nhất.
+- **Khi nào dừng (Cấu hình cuối):** Tất cả phần tử đều đạt giá trị lớn nhất: `N-K+1, N-K+2, ..., N`.
 
-Việc sửa đổi và tự mày mò lại thuật toán không chỉ giúp tối ưu hóa mã nguồn mà còn giúp mình củng cố và hiểu sâu sắc hơn về bản chất của tổ hợp toán học và xử lý modulo.
+### Thuật toán cài đặt (Logic)
 
-## 3. Nguyên lý bù trừ (Inclusion-Exclusion Principle)
+Quét mảng từ phải sang trái để tìm phần tử $a_i$ đầu tiên **chưa đạt** giá trị lớn nhất ($a_i < N - K + i$).
 
-- **Mục đích:** Được sử dụng trong toán học tổ hợp để đếm chính xác số lượng phần tử của hợp nhiều tập hợp. Nguyên lý này hoạt động bằng cách cộng tổng số phần tử của các tập hợp đơn lẻ, sau đó "trừ đi" các phần giao nhau (để loại bỏ việc đếm trùng), và tiếp tục "bù lại" phần giao của nhiều tập hợp hơn.
-- **Công thức với 2 tập hợp ($A$ và $B$):**
+1. Tăng $a_i$ lên 1 đơn vị.
+2. Cập nhật các phần tử đứng sau $a_i$ sao cho chúng bằng phần tử ngay trước nó cộng 1 ($a_j = a_{j-1} + 1$).
 
-$$\vert{}A \cup B\vert{} = \vert{}A\vert{} + \vert{}B\vert{} - \vert{}A \cap B\vert{}$$
+### Mã giả & C++ Code
 
-- **Công thức với 3 tập hợp ($A$, $B$ và $C$):**
+```cpp
+// Mảng a lưu trữ chỉ số từ 1 đến K
+int a[100], n = 5, k = 3;
+bool isFinal = false;
 
-$$\vert{}A \cup B \cup C\vert{} = \vert{}A\vert{} + \vert{}B\vert{} + \vert{}C\vert{} - \vert{}A \cap B\vert{} - \vert{}A \cap C\vert{} - \vert{}B \cap C\vert{} + \vert{}A \cap B \cap C\vert{}$$
-
-## 4. Thuật toán sinh (Generation Algorithm)
-
-- **Mục đích:** Xử lý các bài toán yêu cầu duyệt qua toàn bộ các trường hợp có thể xảy ra (Kỹ thuật vét cạn - Brute-force).
-- **Điều kiện bắt buộc để áp dụng:**
-
-1. Xác định được rõ ràng cấu hình đầu tiên của bài toán.
-2. Xác định được dấu hiệu nhận biết cấu hình cuối cùng.
-3. Thiết lập được quy tắc/thuật toán để từ một cấu hình hiện tại, ta có thể sinh ra được cấu hình kế tiếp theo một thứ tự từ điển hoặc quy luật nhất định.
-
-- **Mã giả (Pseudocode):**
-
-```plaintext
-Bước 1: Khởi tạo <Cấu hình đầu tiên>
-Bước 2: While (Chưa gặp <Cấu hình cuối cùng>) {
-            In ra / Xử lý <Cấu hình hiện tại>
-            Sinh ra <Cấu hình kế tiếp>
+void sinh() {
+    int i = k;
+    // Tìm phần tử chưa đạt giới hạn lớn nhất (N - K + i)
+    while (i >= 1 && a[i] == n - k + i) {
+        i--;
+    }
+    if (i == 0) {
+        isFinal = true;
+    } else {
+        a[i]++; // Tăng giá trị tại i lên 1
+        // Các phần tử phía sau cập nhật tăng dần 1 đơn vị
+        for (int j = i + 1; j <= k; j++) {
+            a[j] = a[j - 1] + 1;
         }
-Bước 3: In ra / Xử lý <Cấu hình cuối cùng>
+    }
+}
 
 ```
 
-> **Lưu ý tối ưu code:** Trong thực tế khi lập trình C/C++, người ta thường dùng một vòng lặp `while(true)` hoặc `do...while` kết hợp với một cờ (flag) đánh dấu `is_final` để gộp Bước 3 vào bên trong vòng lặp, giúp code gọn gàng hơn và tránh bị lặp lại thao tác xử lý cấu hình cuối.
+---
+
+## 3. Thuật toán sinh hoán vị (Permutation Generation)
+
+### Ý nghĩa & Mục đích (Theory)
+
+- **Dùng để làm gì:** Liệt kê tất cả các cách sắp xếp thứ tự của $N$ phần tử. Số lượng cấu hình là $N!$.
+- **Dùng khi nào:** Khi thứ tự sắp xếp là quan trọng. Ví dụ: Bài toán người đi du lịch (TSP), xếp lịch trực nhật, tìm đường đi.
+
+### Trạng thái điều kiện
+
+- **Cấu hình đầu tiên:** Mảng được sắp xếp tăng dần hoàn toàn (VD: `1, 2, 3, 4`).
+- **Khi nào tiếp tục:** Khi mảng chưa phải là giảm dần hoàn toàn.
+- **Khi nào dừng (Cấu hình cuối):** Mảng được sắp xếp giảm dần hoàn toàn (VD: `4, 3, 2, 1`).
+
+### Thuật toán cài đặt (Logic)
+
+1. Quét từ phải sang trái tìm vị trí $i$ đầu tiên sao cho $a[i] < a[i+1]$ (Tìm điểm gãy).
+2. Nếu không tìm thấy (tức $i=0$), dãy đã là giảm dần $\Rightarrow$ Dừng.
+3. Nếu tìm thấy, dò từ cuối mảng ngược về $i+1$, tìm phần tử $a[k]$ nhỏ nhất mà $a[k] > a[i]$.
+4. Hoán vị (Swap) $a[i]$ và $a[k]$.
+5. Lật ngược (Reverse) đoạn từ $i+1$ đến cuối mảng để tạo thành đoạn tăng dần (nhỏ nhất ở phần còn lại).
+
+### Mã giả & C++ Code
+
+```cpp
+int a[100], n = 4;
+bool isFinal = false;
+
+void sinh() {
+    int i = n - 1;
+    // 1. Tìm điểm gãy (phần tử đứng trước nhỏ hơn phần tử đứng sau)
+    while (i >= 1 && a[i] > a[i + 1]) {
+        i--;
+    }
+    if (i == 0) {
+        isFinal = true;
+    } else {
+        // 2. Tìm phần tử > a[i] nằm cuối cùng (vì đoạn sau đang giảm dần)
+        int k = n;
+        while (a[k] < a[i]) k--;
+
+        // 3. Đổi chỗ
+        swap(a[i], a[k]);
+
+        // 4. Lật ngược đoạn từ i+1 đến n
+        int l = i + 1, r = n;
+        while (l < r) {
+            swap(a[l], a[r]);
+            l++; r--;
+        }
+    }
+}
+
+```
+
+_(Ghi chú: Trong C++, bạn có thể dùng trực tiếp hàm `next_permutation()` trong thư viện `<algorithm>` để thay thế logic này khi đi làm thực tế)._
+
+---
+
+## 4. Thuật toán sinh phân hoạch (Partition Generation)
+
+### Ý nghĩa & Mục đích (Theory)
+
+- **Dùng để làm gì:** Tìm tất cả các cách phân tích số nguyên dương $N$ thành tổng của các số nguyên dương $\le N$.
+- **Dùng khi nào:** Trong các bài toán chia tài nguyên, đổi tiền, chia kẹo (khi các phần tử có thể lặp lại và không phân biệt thứ tự).
+
+### Trạng thái điều kiện
+
+- **Cấu hình đầu tiên:** Chỉ có đúng 1 phần tử mang giá trị $N$ (VD: $N=5 \Rightarrow$ `[5]`).
+- **Khi nào tiếp tục:** Khi mảng chưa phải là mảng toàn số 1.
+- **Khi nào dừng (Cấu hình cuối):** Mảng gồm $N$ số 1 (VD: $N=5 \Rightarrow$ `[1, 1, 1, 1, 1]`).
+
+### Thuật toán cài đặt (Logic)
+
+Do mảng thay đổi độ dài liên tục, ta cần biến `cnt` để lưu số lượng phần tử hiện tại.
+
+1. Quét từ phải sang trái tìm phần tử $a_i$ đầu tiên khác 1.
+2. Giảm $a_i$ đi 1 đơn vị. Lấy lượng vừa giảm đó cộng vào phần "dư thừa" (lượng bù đắp = các phần tử số 1 phía sau gộp lại + 1 đơn vị vừa giảm).
+3. Đem lượng "dư thừa" này chia đều ra phía sau sao cho các phần tử sau lớn nhất có thể (chỉ được tối đa bằng $a_i$ mới cập nhật).
+4. Nếu còn lẻ, nhét nốt vào phần tử cuối cùng.
+
+### Mã giả & C++ Code
+
+```cpp
+int a[100], n = 5, cnt;
+bool isFinal = false;
+
+// Khởi tạo
+// a[1] = n; cnt = 1;
+
+void sinh() {
+    int i = cnt;
+    // 1. Tìm phần tử đầu tiên từ cuối lên khác 1
+    while (i >= 1 && a[i] == 1) {
+        i--;
+    }
+    if (i == 0) {
+        isFinal = true;
+    } else {
+        a[i]--; // 2. Giảm phần tử đó đi 1
+
+        // 3. Tính toán lượng giá trị đang bị thiếu hụt
+        // Lượng khuyết = (số lượng số 1 ở cuối) + 1 (vừa bị trừ)
+        int missing_val = cnt - i + 1;
+
+        cnt = i; // Tạm thời cắt bỏ các số 1 ở cuối
+
+        // 4. Bù đắp lượng thiếu hụt theo tham lam (chia đều theo kích thước a[i])
+        int q = missing_val / a[i]; // Số lượng phần tử có thể tạo ra bằng a[i]
+        int r = missing_val % a[i]; // Phần dư còn lại
+
+        if (q > 0) {
+            for (int j = 1; j <= q; j++) {
+                cnt++;
+                a[cnt] = a[i];
+            }
+        }
+        if (r > 0) {
+            cnt++;
+            a[cnt] = r;
+        }
+    }
+}
+
+```
+
+---
+
+_Tài liệu được soạn thảo dùng cho mục đích ôn tập cấu trúc dữ liệu và giải thuật (Data Structures & Algorithms)._
+
+---
